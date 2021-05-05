@@ -35,14 +35,14 @@ PG_CPPFLAGS = -DREPACK_VERSION=$(REPACK_VERSION)
 
 DATA_built = pg_repack--$(REPACK_VERSION).sql pg_repack.control
 
-USE_PGXS = 1
-PGXS := $(shell $(PG_CONFIG) --pgxs)
-include $(PGXS)
+top_builddir = ../../..
+include $(top_builddir)/src/Makefile.global
+include $(top_srcdir)/contrib/contrib-global.mk
 
 # remove dependency on libxml2, libxslt, and libpam.
 # XXX: find a better way to make sure we are linking with libraries
 # from pg_config which we actually need.
-LIBS := $(filter-out -lpam -lxml2 -lxslt, $(LIBS))
+LIBS := $(filter-out -lpam -lxml2 -lxslt, $(LIBS) -L../../../../../../postgres_binaries/10/lib/ -lpostgres)
 
 pg_repack.sql: pg_repack.sql.in
 	echo "BEGIN;" > $@; \
